@@ -4,9 +4,17 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
+import { Injector } from '@angular/core';
+import { createCustomElement } from '@angular/elements';
+
+import { Exercise1Component } from './components/exercise1/exercise1.component';
+import { Exercise2Component } from './components/exercise2/exercise2.component';
+
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    Exercise1Component,
+    Exercise2Component
   ],
   imports: [
     BrowserModule,
