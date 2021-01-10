@@ -2,3 +2,12 @@ body{
     font-size: 0.85rem;
     font-family: 'Montserrat', sans-serif;
 }
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px;
+}
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
