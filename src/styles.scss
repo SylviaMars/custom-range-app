@@ -11,3 +11,11 @@ body{
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+.description-box,
+    p,
+    h6,
+    span {
+        text-align: center;
+        font-family: 'Montserrat', sans-serif;
+        margin: 0 auto;
+    }

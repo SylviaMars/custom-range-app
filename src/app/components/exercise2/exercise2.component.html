@@ -1,1 +1,26 @@
-<p>exercise2 works!</p>
+<div class="description-box w-75">
+    <h6><b>Angular custom range component</b></h6><br>
+    <p>
+        Price values can be selected by dragging the bullet to the desired position. This is
+        possible by getting the axis position (which is returned in px
+        using Cdk Drag & Drop function from Angular Material)
+        and then calculating its proportion to the given Min and Max values.
+        This value is binded to its corresponding label.<br>
+        Values can be also edited manually introducing the price by input.
+        With the same logic we can get an 'x' px position by calculating the values
+        with a simple rule of three.<br>
+        To prevent bullets from crossing there are two different invisible div axis
+        with widths determined by each bullet position.
+    </p>
+</div>
+<ngc-range [fixed]="true" [minValue]="0" [maxValue]="200"></ngc-range>
+<style>
+    .description-box,
+    p,
+    h6,
+    span {
+        text-align: center;
+        font-family: 'Montserrat', sans-serif;
+        margin: 0 auto;
+    }
+</style>
