@@ -4,11 +4,11 @@
         <div id="firstColumn" class="col-2 p-0 d-flex justify-content-start">
             <span *ngIf="!firstInputActive" #firstValueLabel id="firstValueLabel" class="m-0"
                 (click)="inputActive(true)">
-                {{firstValue | number:'1.0-2'}}€
+                {{minValue | number:'1.0-2'}}€
             </span>
             <input *ngIf="firstInputActive" type="number" #firstValueInput id="firstValueInput" name="firstValueInput"
                 (keydown.enter)="inputActive(true)" (keydown.enter)="changeBulletPosition(firstValueInput.value, true)"
-                min="10" max="100" [(ngModel)]="firstValue">
+                min="10" max="100" [(ngModel)]="minValue">
         </div>
         <div id="rangeColumn" class="col-8 p-0 d-flex justify-content-center">
             <div class="range-parent">
