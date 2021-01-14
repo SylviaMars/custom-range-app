@@ -5,7 +5,7 @@ import { createCustomElement } from '@angular/elements';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DragDropModule } from '@angular/cdk/drag-drop';
-import { FormsModule } from '@angular/forms';
+import { FormsModule,  ReactiveFormsModule } from '@angular/forms';
 import { AppRoutingModule } from 'src/app/app-routing.module';
 import { BrowserModule } from '@angular/platform-browser';
 
@@ -19,7 +19,8 @@ import { BrowserModule } from '@angular/platform-browser';
     AppRoutingModule,
     BrowserAnimationsModule,
     DragDropModule,
-    FormsModule
+    FormsModule,
+    ReactiveFormsModule
   ],
   entryComponents: [CustomRangeComponent],
   exports: [CustomRangeComponent]
