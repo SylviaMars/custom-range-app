@@ -1,20 +1,22 @@
 <div class="container">
     <!-- RANGE ELEMENT -->
     <div class="parent row" id="parent">
-        <div id="firstColumn" class="col-2 p-0 d-flex justify-content-start">
-            <span *ngIf="!firstInputActive" #firstValueLabel id="firstValueLabel" class="m-0"
+        <!-- MIN VALUE -->
+        <div id="firstColumn" [formGroup]="form" class="col-2 p-0 d-flex justify-content-start">
+            <span *ngIf="!firstInputActive && priceRange" #firstValueLabel id="firstValueLabel" class="m-0"
                 (click)="inputActive(true)">
-                {{minValue | number:'1.0-2'}}€
+                {{priceRange.min}}€
             </span>
-            <input *ngIf="firstInputActive" type="number" #firstValueInput id="firstValueInput" name="firstValueInput"
+            <input *ngIf="firstInputActive" type="number" #firstValueInput id="firstValueInput" 
+                formControlName="firstValueInput"
                 (keydown.enter)="inputActive(true)" (keydown.enter)="changeBulletPosition(firstValueInput.value, true)"
-                min="10" max="100" [(ngModel)]="minValue">
+                min="0" max="100" [(ngModel)]="priceRange.min" >
         </div>
         <div id="rangeColumn" class="col-8 p-0 d-flex justify-content-center">
             <div class="range-parent">
                 <div class="range"></div>
                 <!-- FIRST BOUNDARY -->
-                <div class="first-boundary" [ngStyle]="{'width': getFirstBoundaryWidth()}">
+                <div class="first-boundary" [ngStyle]="{'width': firstBoundaryWidth + 'px'}">
                     <!-- FIRST BULLET -->
                     <div class="bullet" #firstBullet id="firstBullet" cdkDragLockAxis="x"
                         cdkDragBoundary=".first-boundary" [cdkDragFreeDragPosition]="firstBulletDragPosition" cdkDrag
@@ -23,7 +25,7 @@
                 </div>
                 <!-- SECOND BOUNDARY -->
                 <div class="second-boundary"
-                    [ngStyle]="{'width': secondBoundaryWidth + 'px', 'margin-left': secondBoundaryPosition}">
+                    [ngStyle]="{'width': secondBoundaryWidth + 'px', 'margin-left': secondBoundaryPosition + 'px'}">
                     <!-- SECOND BULLET -->
                     <div class="bullet" #secondBullet id="secondBullet" cdkDragLockAxis="x"
                         cdkDragBoundary=".second-boundary" [cdkDragFreeDragPosition]="secondBulletDragPosition" cdkDrag
@@ -32,18 +34,20 @@
                 </div>
             </div>
         </div>
-        <div id="thirdColumn" class="col-2 p-0 d-flex justify-content-end">
-            <span *ngIf="!secondInputActive" #secondValueLabel id="secondValueLabel" class="m-0"
+        <!-- MAX VALUE -->
+        <div id="thirdColumn" [formGroup]="form" class="col-2 p-0 d-flex justify-content-end">
+            <span *ngIf="!secondInputActive && priceRange" #secondValueLabel id="secondValueLabel" class="m-0"
                 (click)="inputActive(false)">
-                {{secondValue | number:'1.0-2'}}€
+                {{priceRange.max}}€
             </span>
             <input *ngIf="secondInputActive" type="number" #secondValueInput id="secondValueInput"
-                name="secondValueInput" (keydown.enter)="inputActive(false)"
-                (keydown.enter)="changeBulletPosition(secondValueInput.value, false)" min="10" max="100"
-                [(ngModel)]="secondValue">
+                formControlName="secondValueInput" 
+                (keydown.enter)="inputActive(false)" (keydown.enter)="changeBulletPosition(secondValueInput.value, false)"
+                min="10" max="100" [(ngModel)]="priceRange.max">
         </div>
     </div>
-    
 </div>
-{{minValue}}
-{{maxValue}}
+<div class="mb-4">
+    <p>First bullet PX position: {{firstBulletDragPosition.x}}</p>
+    <p>Second bullet PX position: {{secondBulletDragPosition.x + secondBoundaryPosition}}</p>
+</div>

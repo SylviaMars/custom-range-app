@@ -60,8 +60,8 @@
     }
 
     .bullet:hover {
-        height: 16px;
-        width: 16px;
+        height: 14px;
+        width: 14px;
     }
      
     #firstBullet {
@@ -70,7 +70,9 @@
 
     #secondBullet {
     }
-
+    .ng-invalid {
+        color: red;
+    }
     /* TO REMOVE */
     #secondPointer {}
 
