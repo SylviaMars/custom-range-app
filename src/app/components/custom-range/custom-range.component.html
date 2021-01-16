@@ -6,7 +6,7 @@
             <span *ngIf="!firstInputActive && priceRange" #firstValueLabel id="firstValueLabel" class="m-0">
                 {{priceRange.min | number : '1.2-2'}}€
             </span>
-            <input *ngIf="firstInputActive" type="number" #firstValueInput id="firstValueInput"
+            <input *ngIf="firstInputActive && !fixed" type="number" #firstValueInput id="firstValueInput"
                 formControlName="firstValueInput" (keydown.enter)="inputActive(true)"
                 (keydown.enter)="changeBulletPosition(firstValueInput.value, true)" min="0" max="100"
                 [(ngModel)]="priceRange.min">

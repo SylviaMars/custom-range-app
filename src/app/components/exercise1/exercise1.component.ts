@@ -17,6 +17,7 @@ export class Exercise1Component implements OnInit {
     }
 
     ngOnInit(): void {
+        // tslint:disable-next-line: deprecation
         this.priceService.getRangePrices().subscribe(response => {
             if (response.body !== null) {
                 this.priceRange = response.body;

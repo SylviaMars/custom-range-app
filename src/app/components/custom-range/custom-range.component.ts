@@ -1,5 +1,5 @@
 import { CdkDragMove } from '@angular/cdk/drag-drop';
-import { ChangeDetectorRef, ElementRef, Input, Output, ViewChild} from '@angular/core';
+import { AfterContentChecked, AfterContentInit, AfterViewChecked, AfterViewInit, ChangeDetectorRef, ElementRef, Input, OnChanges, Output, ViewChild} from '@angular/core';
 import { Component, OnInit, forwardRef, EventEmitter } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
 import { PriceRange } from 'src/app/models/PriceRange.model';
@@ -22,10 +22,11 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
         multi: true
     }]
 })
-export class CustomRangeComponent implements OnInit, ControlValueAccessor {
+export class CustomRangeComponent implements OnInit, ControlValueAccessor, OnChanges {
     @Input() fixed = false;
     @Input() minValue: number;
     @Input() maxValue: number;
+    @Input() values: number[];
     @Output() rangeChange = new EventEmitter();
 
     form: FormGroup;
@@ -47,14 +48,16 @@ export class CustomRangeComponent implements OnInit, ControlValueAccessor {
 
     pricePerPx = 0;
 
+    // Space in px for every value values array
+    rangeSteps = 0;
+
     dragDisabled = false;
 
-    window = window.document;
-
-    constructor(private detectChange: ChangeDetectorRef) {
+    constructor(private cdRef: ChangeDetectorRef) {
         this.minValue = 0;
         this.maxValue = 10;
         this.priceRange = new PriceRange();
+        this.values = [];
         this.form = new FormGroup({
             firstValueInput: new FormControl('', [Validators.minLength(0)]),
             secondValueInput: new FormControl('', [Validators.maxLength(10000)])
@@ -79,7 +82,7 @@ export class CustomRangeComponent implements OnInit, ControlValueAccessor {
 
     ngOnInit(): void {
         window.document.addEventListener('click', (e: MouseEvent) => {
-            if (e.target !== null ) {
+            if (e.target !== null && !this.fixed ) {
                 const ev = e.target as HTMLTextAreaElement;
                 switch (ev.id) {
                     case 'firstValueLabel': {
@@ -106,6 +109,17 @@ export class CustomRangeComponent implements OnInit, ControlValueAccessor {
                 }
             }
         });
+    }
+
+    ngOnChanges(): void {
+            if (this.values.length > 1) {
+                this.minValue = this.values[0];
+                this.maxValue = this.values[this.values.length - 1];
+                this.priceRange.min = this.values[0];
+                this.priceRange.max = this.values[this.values.length - 1];
+                this.rangeSteps = this.values.length / 200;
+                this.cdRef.detectChanges();
+            }
     }
 
     /**
@@ -172,7 +186,7 @@ export class CustomRangeComponent implements OnInit, ControlValueAccessor {
      */
     getFirstBulletValue(event: CdkDragMove): void {
         if ((event.source.getFreeDragPosition().x + 11) < this.secondBulletDragPosition.x){
-            this.priceRange.min = this.getRelativePrice(event.source.getFreeDragPosition().x);
+            this.priceRange.min = this.getRelativePrice(event.source.getFreeDragPosition().x) + this.minValue;
             this.firstBulletDragPosition.x = event.source.getFreeDragPosition().x;
             this.firstBulletDragPosition.y = 0;
             this.rangeChange.emit(this.priceRange);
