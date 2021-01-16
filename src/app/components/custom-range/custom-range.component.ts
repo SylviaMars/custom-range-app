@@ -1,5 +1,5 @@
-import { CdkDragEnd } from '@angular/cdk/drag-drop';
-import { ChangeDetectorRef, Input, Output} from '@angular/core';
+import { CdkDragMove } from '@angular/cdk/drag-drop';
+import { ChangeDetectorRef, ElementRef, Input, Output, ViewChild} from '@angular/core';
 import { Component, OnInit, forwardRef, EventEmitter } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
 import { PriceRange } from 'src/app/models/PriceRange.model';
@@ -43,12 +43,13 @@ export class CustomRangeComponent implements OnInit, ControlValueAccessor {
     minPxValue = 0;
     maxPxValue = 200;
 
-    // Boundaries for bullet positions
-    firstBoundaryWidth = 200;
-    secondBoundaryWidth = 200;
-    secondBoundaryPosition = 0;
+    boundary = 212;
 
     pricePerPx = 0;
+
+    dragDisabled = false;
+
+    window = window.document;
 
     constructor(private detectChange: ChangeDetectorRef) {
         this.minValue = 0;
@@ -56,7 +57,7 @@ export class CustomRangeComponent implements OnInit, ControlValueAccessor {
         this.priceRange = new PriceRange();
         this.form = new FormGroup({
             firstValueInput: new FormControl('', [Validators.minLength(0)]),
-            secondValueInput: new FormControl('', [Validators.maxLength(1000)])
+            secondValueInput: new FormControl('', [Validators.maxLength(10000)])
         });
     }
 
@@ -76,7 +77,36 @@ export class CustomRangeComponent implements OnInit, ControlValueAccessor {
         this.onTouched = fn;
     }
 
-    ngOnInit(): void {}
+    ngOnInit(): void {
+        window.document.addEventListener('click', (e: MouseEvent) => {
+            if (e.target !== null ) {
+                const ev = e.target as HTMLTextAreaElement;
+                switch (ev.id) {
+                    case 'firstValueLabel': {
+                        this.firstInputActive = true;
+                        break;
+                    }
+                    case 'secondValueLabel': {
+                        this.secondInputActive = true;
+                        break;
+                    }
+                    case 'firstValueInput': {
+                        this.firstInputActive = true;
+                        break;
+                    }
+                    case 'secondValueInput': {
+                        this.secondInputActive = true;
+                        break;
+                    }
+                    default: {
+                        this.firstInputActive = false;
+                        this.secondInputActive = false;
+                        break;
+                    }
+                }
+            }
+        });
+    }
 
     /**
      * Given a price value from input, change corresponding bullet position.
@@ -88,27 +118,16 @@ export class CustomRangeComponent implements OnInit, ControlValueAccessor {
             if ( (parseInt(inputValue, 0) >= this.minValue) && this.maxValue > parseInt(inputValue, 0)) {
                 const position = this.getProportion(this.maxPxValue, parseInt(inputValue, 0), (this.maxValue - this.minValue));
                 this.firstBulletDragPosition = { x: position, y: 0 };
-                this.secondBoundaryWidth = (this.maxPxValue - position) - 12;
-                this.secondBoundaryPosition = position + 12;
-                this.secondBulletDragPosition = { x: (200 - position) - 12, y: 0 };
             } else {
                 this.form.controls.firstValueInput.setErrors({ invalid: true });
             }
         } else {
             if ( (parseInt(inputValue, 0) <= this.maxValue) && this.minValue < parseInt(inputValue, 0)) {
-                const auxW = this.secondBoundaryWidth;
-                const auxM = this.secondBoundaryPosition;
-                this.secondBoundaryWidth = 0;
-                this.secondBoundaryPosition = 0;
                 const position = this.getProportion(this.maxPxValue, parseInt(inputValue, 0), (this.maxValue - this.minValue));
                 this.secondBulletDragPosition = { x: position, y: 0 };
-                this.firstBoundaryWidth = position + auxM;
-                this.secondBoundaryWidth = auxW;
-                this.secondBoundaryPosition = auxM;
             } else {
                 this.form.controls.secondValueInput.setErrors({ invalid: true });
             }
-            // calculate fisrt boundary width;
         }
     }
 
@@ -120,7 +139,7 @@ export class CustomRangeComponent implements OnInit, ControlValueAccessor {
      * @param maxValue Total price range.
      */
     getProportion(x: number, selectedValue: number, maxValue: number): number {
-        return  Math.floor((selectedValue * x) / maxValue);
+        return  (selectedValue * x) / maxValue;
     }
 
     /**
@@ -136,37 +155,47 @@ export class CustomRangeComponent implements OnInit, ControlValueAccessor {
      * Calculate price by given position.
      * @param position Bullet position.
      */
-    getRelativePrice(position: number, margin?: number): number {
+    getRelativePrice(position: number): number {
         const pricePerPx = this.getPricePerPx();
         let calc = 0;
-        if (margin) {
-            const total = position + margin;
-            calc = Math.floor((total * pricePerPx) + this.minValue);
+        if (position === 200){
+            calc = (position * pricePerPx) + +(this.minValue);
         } else {
-            calc = Math.floor((position * pricePerPx) + this.minValue);
+            calc = position * pricePerPx;
         }
         return calc;
     }
 
     /**
-     * Sets min price by bullet position value.
+     * Sets min price for first bullet position value.
      * @param event Event emitted when the user stops dragging a draggable.
      */
-    getFirstBulletValue(event: CdkDragEnd): void {
-        this.priceRange.min = this.getRelativePrice(event.source.getFreeDragPosition().x);
-        this.firstBulletDragPosition.x = event.source.getFreeDragPosition().x;
-        const position = this.getProportion(this.maxPxValue, this.priceRange.min, (this.maxValue - this.minValue));
-        console.log(position);
-        this.secondBoundaryPosition = this.firstBulletDragPosition.x + 12;
-        this.secondBoundaryWidth = (this.maxPxValue - this.secondBoundaryPosition);
-        this.secondBulletDragPosition = { x: (this.secondBulletDragPosition.x - this.secondBoundaryPosition), y: 0 };
-        this.rangeChange.emit(this.priceRange);
+    getFirstBulletValue(event: CdkDragMove): void {
+        if ((event.source.getFreeDragPosition().x + 11) < this.secondBulletDragPosition.x){
+            this.priceRange.min = this.getRelativePrice(event.source.getFreeDragPosition().x);
+            this.firstBulletDragPosition.x = event.source.getFreeDragPosition().x;
+            this.firstBulletDragPosition.y = 0;
+            this.rangeChange.emit(this.priceRange);
+        } else {
+            document.dispatchEvent(new Event('mouseup'));
+            this.firstBulletDragPosition = { x: this.secondBulletDragPosition.x - 12, y: 0 };
+        }
     }
 
-    getSecondBulletValue(event: CdkDragEnd): void {
-        this.priceRange.max = this.getRelativePrice(event.source.getFreeDragPosition().x, this.secondBoundaryPosition);
-        this.secondBulletDragPosition.x = event.source.getFreeDragPosition().x;
-        this.rangeChange.emit(this.priceRange);
+    /**
+     * Sets min price for second bullet position value.
+     * @param event Event emitted when the user stops dragging a draggable.
+     */
+    getSecondBulletValue(event: CdkDragMove): void {
+        if (event.source.getFreeDragPosition().x > this.firstBulletDragPosition.x){
+            this.priceRange.max = this.getRelativePrice(event.source.getFreeDragPosition().x);
+            this.secondBulletDragPosition.x = event.source.getFreeDragPosition().x;
+            this.secondBulletDragPosition.y = 0;
+            this.rangeChange.emit(this.priceRange);
+        } else {
+            document.dispatchEvent(new Event('mouseup'));
+            this.secondBulletDragPosition = { x: this.firstBulletDragPosition.x + 12, y: 0 };
+        }
     }
 
     /**
@@ -179,24 +208,5 @@ export class CustomRangeComponent implements OnInit, ControlValueAccessor {
             this.secondInputActive === false ? this.secondInputActive = true : this.secondInputActive = false;
         }
     }
-
-    getFirstBoundaryWidth(): string {
-        // const auxValue = this.secondValue < 188 ? this.secondValue + 12 : this.secondValue - 12;
-        return (this.maxPxValue).toString() + 'px';
-    }
-
-    getSecondBoundaryWidth(): void {
-        const num = this.minPxValue > 12 ? (this.maxValue - this.minPxValue) : (this.maxValue - this.minPxValue);
-        this.secondBoundaryWidth = num;
-        // this.secondBulletDragPosition = { x: this.getRelativePosition(), y: this.secondBulletDragPosition.y };
-    }
-
-    getSecondBoundaryPosition(): void {
-        //this.secondBoundaryPosition = (this.minPxValue).toString() + 'px';
-    }
-
-    // getRelativePosition(): number {
-    //     return (this.secondBulletDragPosition.x / 200) * this.secondBoundaryWidth;
-    // }
 
 }

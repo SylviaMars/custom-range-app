@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { PriceRange } from 'src/app/models/PriceRange.model';
 import { PricesService } from 'src/app/services/prices.service';
 
@@ -25,7 +25,7 @@ export class Exercise1Component implements OnInit {
             }
         }, error => {
             throw new Error('Error:' + error.status);
-        }, () => console.log(this.priceRange));
+        });
     }
 
     setPrices(event: PriceRange): void {
