@@ -1,4 +1,4 @@
-import { Component, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { PriceRange } from 'src/app/models/PriceRange.model';
 import { PricesService } from 'src/app/services/prices.service';
 

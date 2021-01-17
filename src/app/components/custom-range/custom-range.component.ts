@@ -1,5 +1,5 @@
 import { CdkDragMove } from '@angular/cdk/drag-drop';
-import { AfterContentChecked, AfterContentInit, AfterViewChecked, AfterViewInit, ChangeDetectorRef, ElementRef, Input, OnChanges, Output, ViewChild} from '@angular/core';
+import { ChangeDetectorRef, Input, OnChanges, Output } from '@angular/core';
 import { Component, OnInit, forwardRef, EventEmitter } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
 import { PriceRange } from 'src/app/models/PriceRange.model';
@@ -31,7 +31,7 @@ export class CustomRangeComponent implements OnInit, ControlValueAccessor, OnCha
     @Output() rangeChange = new EventEmitter();
 
     form: FormGroup;
-    priceRange: PriceRange = {min: 0, max: 100};
+    priceRange: PriceRange = { min: 0, max: 100 };
 
     // Bullets coordenates
     firstBulletDragPosition = { x: 0, y: 0 };
@@ -67,8 +67,8 @@ export class CustomRangeComponent implements OnInit, ControlValueAccessor, OnCha
         });
     }
 
-    onChange: (_: any) => void = (_: any) => {};
-    onTouched: () => void = () => {};
+    onChange: (_: any) => void = (_: any) => { };
+    onTouched: () => void = () => { };
     updateChanges(): void {
         this.onChange(this.priceRange);
     }
@@ -84,8 +84,13 @@ export class CustomRangeComponent implements OnInit, ControlValueAccessor, OnCha
     }
 
     ngOnInit(): void {
+        /**
+         * Event fires when clicking on document.
+         * If target.id is equal to any of the inputs or labels, show corresponding input.
+         * Else show labels.
+         */
         window.document.addEventListener('click', (e: MouseEvent) => {
-            if (e.target !== null && !this.fixed ) {
+            if (e.target !== null && !this.fixed) {
                 const ev = e.target as HTMLTextAreaElement;
                 switch (ev.id) {
                     case 'firstValueLabel': {
@@ -114,16 +119,19 @@ export class CustomRangeComponent implements OnInit, ControlValueAccessor, OnCha
         });
     }
 
+    /**
+     * Detect changes when values array receives data from parent and assign form values.
+     */
     ngOnChanges(): void {
-            if (this.values.length > 1) {
-                this.minValue = this.values[0];
-                this.maxValue = this.values[this.values.length - 1];
-                this.priceRange.min = this.values[0];
-                this.priceRange.max = this.values[this.values.length - 1];
-                this.rangeSteps =  200 / this.values.length;
-                this.getValuesPosition();
-                this.cdRef.detectChanges();
-            }
+        if (this.values.length > 1) {
+            this.minValue = this.values[0];
+            this.maxValue = this.values[this.values.length - 1];
+            this.priceRange.min = this.values[0];
+            this.priceRange.max = this.values[this.values.length - 1];
+            this.rangeSteps = 200 / this.values.length;
+            this.getValuesPosition();
+            this.cdRef.detectChanges();
+        }
     }
 
     /**
@@ -133,14 +141,14 @@ export class CustomRangeComponent implements OnInit, ControlValueAccessor, OnCha
      */
     changeBulletPosition(inputValue: string, isFirstBullet: boolean): void {
         if (isFirstBullet) {
-            if ( (parseInt(inputValue, 0) >= this.minValue) && this.maxValue > parseInt(inputValue, 0)) {
+            if ((parseInt(inputValue, 0) >= this.minValue) && this.maxValue > parseInt(inputValue, 0)) {
                 const position = this.getProportion(this.maxPxValue, parseInt(inputValue, 0), (this.maxValue - this.minValue));
                 this.firstBulletDragPosition = { x: position, y: 0 };
             } else {
                 this.form.controls.firstValueInput.setErrors({ invalid: true });
             }
         } else {
-            if ( (parseInt(inputValue, 0) <= this.maxValue) && this.minValue < parseInt(inputValue, 0)) {
+            if ((parseInt(inputValue, 0) <= this.maxValue) && this.minValue < parseInt(inputValue, 0)) {
                 const position = this.getProportion(this.maxPxValue, parseInt(inputValue, 0), (this.maxValue - this.minValue));
                 this.secondBulletDragPosition = { x: position, y: 0 };
             } else {
@@ -157,7 +165,7 @@ export class CustomRangeComponent implements OnInit, ControlValueAccessor, OnCha
      * @param maxValue Total price range.
      */
     getProportion(x: number, selectedValue: number, maxValue: number): number {
-        return  (selectedValue * x) / maxValue;
+        return (selectedValue * x) / maxValue;
     }
 
     /**
@@ -176,7 +184,7 @@ export class CustomRangeComponent implements OnInit, ControlValueAccessor, OnCha
     getRelativePrice(position: number): number {
         const pricePerPx = this.getPricePerPx();
         let calc = 0;
-        if (position === 200){
+        if (position === 200) {
             calc = (position * pricePerPx) + +(this.minValue);
         } else {
             calc = position * pricePerPx;
@@ -190,7 +198,7 @@ export class CustomRangeComponent implements OnInit, ControlValueAccessor, OnCha
      */
     getFirstBulletValue(event: CdkDragMove): void {
         if (!this.fixed) {
-            if ((event.source.getFreeDragPosition().x + 11) < this.secondBulletDragPosition.x){
+            if ((event.source.getFreeDragPosition().x + 11) < this.secondBulletDragPosition.x) {
                 this.priceRange.min = this.getRelativePrice(event.source.getFreeDragPosition().x) + this.minValue;
                 this.firstBulletDragPosition.x = event.source.getFreeDragPosition().x;
                 this.firstBulletDragPosition.y = 0;
@@ -200,9 +208,9 @@ export class CustomRangeComponent implements OnInit, ControlValueAccessor, OnCha
                 this.firstBulletDragPosition = { x: this.secondBulletDragPosition.x - 12, y: 0 };
             }
         } else {
-            if ((event.source.getFreeDragPosition().x + 11) < this.secondBulletDragPosition.x){
+            if ((event.source.getFreeDragPosition().x + 11) < this.secondBulletDragPosition.x) {
                 const aux = this.rangeStepsArray.length - 1;
-                if (event.source.getFreeDragPosition().x > this.rangeStepsArray[aux - 1].pxPosition){
+                if (event.source.getFreeDragPosition().x > this.rangeStepsArray[aux - 1].pxPosition) {
                     this.priceRange.min = this.rangeStepsArray[aux].price;
                     this.rangeChange.emit(this.priceRange);
                     return;
@@ -236,7 +244,7 @@ export class CustomRangeComponent implements OnInit, ControlValueAccessor, OnCha
      */
     getSecondBulletValue(event: CdkDragMove): void {
         if (!this.fixed) {
-            if (event.source.getFreeDragPosition().x > this.firstBulletDragPosition.x){
+            if (event.source.getFreeDragPosition().x > this.firstBulletDragPosition.x) {
                 this.priceRange.max = this.getRelativePrice(event.source.getFreeDragPosition().x);
                 this.secondBulletDragPosition.x = event.source.getFreeDragPosition().x;
                 this.secondBulletDragPosition.y = 0;
@@ -246,9 +254,9 @@ export class CustomRangeComponent implements OnInit, ControlValueAccessor, OnCha
                 this.secondBulletDragPosition = { x: this.firstBulletDragPosition.x + 12, y: 0 };
             }
         } else {
-            if (event.source.getFreeDragPosition().x > this.firstBulletDragPosition.x){
+            if (event.source.getFreeDragPosition().x > this.firstBulletDragPosition.x) {
                 const aux = this.rangeStepsArray.length - 1;
-                if (event.source.getFreeDragPosition().x > this.rangeStepsArray[aux - 1].pxPosition){
+                if (event.source.getFreeDragPosition().x > this.rangeStepsArray[aux - 1].pxPosition) {
                     this.priceRange.max = this.rangeStepsArray[aux].price;
                     this.rangeChange.emit(this.priceRange);
                     return;
@@ -288,10 +296,10 @@ export class CustomRangeComponent implements OnInit, ControlValueAccessor, OnCha
     /**
      * Fills rangeStepArray with prices from values array and assigns a relative possition to each value.
      */
-    getValuesPosition(): void{
+    getValuesPosition(): void {
         let counter = this.rangeSteps;
         this.values.forEach((value) => {
-            this.rangeStepsArray.push({price: value, pxPosition: Math.round(counter)});
+            this.rangeStepsArray.push({ price: value, pxPosition: Math.round(counter) });
             counter = counter + this.rangeSteps;
         });
     }
