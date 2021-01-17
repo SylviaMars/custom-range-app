@@ -1,16 +1,13 @@
 <div class="description-box w-75">
     <h6><b>Angular custom fixed range component</b></h6><br>
     <p>
-        Price values can be selected by dragging the bullet to the desired position. This is
-        possible by getting the axis position (which is returned in px
-        using Cdk Drag & Drop function from Angular Material)
-        and then calculating its proportion to the given Min and Max values.
-        This value is binded to its corresponding label.<br>
-        Values can be also edited manually introducing the price by input.
-        With the same logic we can get an 'x' px position by calculating the values
-        with a simple rule of three.<br>
-        To prevent bullets from crossing there are two different invisible div axis
-        with widths determined by each bullet position.
+        In this case, we receive an array from service with different price values: 
+        <i>[1,99, 5,99, 10,99, 30,99, 50,99, 70,99]</i> (or any other values).
+        When the range component receives this values assigns a specific px possition 
+        for each which is relative to the range width.<br>
+        When a bullet reaches a price position, an event is triggered to stop propagation
+        and the price range gets its values set. This Cdk drag event has to be stopped manually,
+        as Cdk doesn't provide it while moving.
     </p>
 </div>
 <ngc-range [values]="priceRangeArray" [fixed]="true" [(ngModel)]="priceRange" (rangeChange)="setPrices($event)"></ngc-range>

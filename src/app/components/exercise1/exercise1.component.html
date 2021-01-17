@@ -4,17 +4,16 @@
         Price values can be selected by dragging the bullet to the desired position. This is
         possible by getting the axis position (which is returned in px
         using Cdk Drag & Drop function from Angular Material)
-        and then calculating its proportion to the given Min and Max values.
+        and then calculating its proportion to the given min and max values.
         This value is binded to its corresponding label.<br>
         Values can be also edited manually introducing the price by input.
         With the same logic we can get an 'x' px position by calculating the values
         with a simple rule of three.<br>
-        To prevent bullets from crossing there are two different invisible div axis
-        with widths determined by each bullet position acting as boundaries.
+        To prevent bullets from crossing, an event is triggered to stop movement when reaching the position 
+        of the other bullet.
     </p>
 </div>
 <ngc-range [minValue]="minPrice" [maxValue]="maxPrice" [(ngModel)]="priceRange" (rangeChange)="setPrices($event)"></ngc-range>
-
 <div>
     <h6><b>Binded price range values to parent: </b></h6><br>
     <p><b>MIN VALUE: </b>{{priceRange.min |  number : '1.2-2'}}€ </p>
