@@ -3,7 +3,7 @@
         <!-- =============== -->
         <!-- MIN PRICE VALUE -->
         <!-- =============== -->
-        <div id="firstColumn" [formGroup]="form" class="col-2 p-0 d-flex justify-content-end">
+        <div id="firstColumn" [formGroup]="form" class="col-12 col-sm-2 p-0 d-flex justify-content-end">
             <span *ngIf="!firstInputActive && priceRange" #firstValueLabel id="firstValueLabel" class="m-0">
                 {{priceRange.min | number : '1.2-2'}}€
             </span>
@@ -15,7 +15,7 @@
         <!-- ============ -->
         <!-- RANGE COLUMN  -->
         <!-- ============ -->
-        <div id="rangeColumn" class=" col-12 col-sm-8 p-0 d-flex justify-content-center">
+        <div id="rangeColumn" class="col-12 col-sm-8 p-0 d-flex justify-content-center">
             <div #rangeParent id="rangeParent" class="range-parent"
                 [class.disabled]="this.form.controls.firstValueInput.invalid || this.form.controls.secondValueInput.invalid">
                 <div class="range"></div>
@@ -44,7 +44,7 @@
         <!-- =============== -->
         <!-- MAX PRICE VALUE -->
         <!-- =============== -->
-        <div id="thirdColumn" [formGroup]="form" class="col-2 p-0 d-flex justify-content-end">
+        <div id="thirdColumn" [formGroup]="form" class="col-12 col-sm-2 p-0 d-flex justify-content-end">
             <span *ngIf="!secondInputActive && priceRange" #secondValueLabel id="secondValueLabel" class="m-0"
                 (click)="inputActive(false)">
                 {{priceRange.max | number : '1.2-2'}}€
@@ -56,7 +56,7 @@
         </div>
     </div>
 </div>
-<div class="mb-4">
+<div class="mb-4 mt-4">
     <p>First bullet PX position: {{firstBulletDragPosition.x | number : '1.2-2'}}</p>
     <p>Second bullet PX position: {{secondBulletDragPosition.x | number : '1.2-2'}}</p>
 </div>

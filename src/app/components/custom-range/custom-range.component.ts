@@ -221,9 +221,9 @@ export class CustomRangeComponent implements OnInit, ControlValueAccessor, OnCha
                 } else {
                     for (let i = 0; i <= aux; i++) {
                         if (Math.floor(event.source.getFreeDragPosition().x) === this.rangeStepsArray[i].pxPosition) {
-                            this.priceRange.min = this.rangeStepsArray[i].price;
                             document.dispatchEvent(new Event('mouseup'));
                             this.firstBulletDragPosition = { x: this.rangeStepsArray[i].pxPosition, y: 0 };
+                            this.priceRange.min = this.rangeStepsArray[i].price;
                             this.rangeChange.emit(this.priceRange);
                             return;
                         }
@@ -244,7 +244,7 @@ export class CustomRangeComponent implements OnInit, ControlValueAccessor, OnCha
      */
     getSecondBulletValue(event: CdkDragMove): void {
         if (!this.fixed) {
-            if (event.source.getFreeDragPosition().x > this.firstBulletDragPosition.x) {
+            if (event.source.getFreeDragPosition().x > (this.firstBulletDragPosition.x + 12)) {
                 this.priceRange.max = this.getRelativePrice(event.source.getFreeDragPosition().x);
                 this.secondBulletDragPosition.x = event.source.getFreeDragPosition().x;
                 this.secondBulletDragPosition.y = 0;
@@ -266,10 +266,11 @@ export class CustomRangeComponent implements OnInit, ControlValueAccessor, OnCha
                     return;
                 } else {
                     for (let i = aux; i--;) {
+                        console.log(Math.floor(event.source.getFreeDragPosition().x), this.rangeStepsArray[i].pxPosition);
                         if (Math.floor(event.source.getFreeDragPosition().x) === this.rangeStepsArray[i].pxPosition) {
-                            this.priceRange.max = this.rangeStepsArray[i].price;
                             document.dispatchEvent(new Event('mouseup'));
                             this.secondBulletDragPosition = { x: this.rangeStepsArray[i].pxPosition, y: 0 };
+                            this.priceRange.max = this.rangeStepsArray[i].price;
                             this.rangeChange.emit(this.priceRange);
                             return;
                         }
