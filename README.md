@@ -4,7 +4,7 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 
 | col 1      | col 2     |
 |------------|-------------|
-| <img src="https://https://github.com/SylviaMars/custom-range-app/screencapture-localhost-4200-exercise1-2021-01-17-17_33_35.png" width="250"> | <img src="https://https://github.com/SylviaMars/custom-range-app/screencapture-localhost-4200-exercise2-2021-01-17-17_33_14.png" width="250"> |
+| <img src="https://github.com/SylviaMars/custom-range-app/blob/master/screencapture-localhost-4200-exercise1-2021-01-17-17_33_35.png" width="250"> | <img src="https://https://github.com/SylviaMars/custom-range-app/blob/master/screencapture-localhost-4200-exercise2-2021-01-17-17_33_14.png" width="250"> |
 
 ## Development server
 
